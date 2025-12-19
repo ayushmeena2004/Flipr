@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Clients - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <h2>Admin Panel</h2>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin') }}">Dashboard</a>
+                <a href="{{ url_for('admin_projects') }}">Manage Projects</a>
+                <a href="{{ url_for('admin_clients') }}" class="active">Manage Clients</a>
+                <a href="{{ url_for('admin_contacts') }}">Contact Forms</a>
+                <a href="{{ url_for('admin_subscribers') }}">Newsletter Subscribers</a>
+                <a href="{{ url_for('index') }}" class="back-link">← Back to Website</a>
+            </nav>
+        </aside>
+        
+        <main class="admin-main">
+            <h1>Manage Clients</h1>
+            
+            <div class="admin-form-section">
+                <h2>Add New Client</h2>
+                <form action="{{ url_for('add_client') }}" method="POST" enctype="multipart/form-data" class="admin-form">
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Testimonial</label>
+                        <textarea name="description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Designation</label>
+                        <input type="text" name="designation" placeholder="e.g., CEO, Web Developer" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Client Image (will be cropped to 450x350)</label>
+                        <input type="file" name="image" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Client</button>
+                </form>
+            </div>
+            
+            <div class="admin-table-section">
+                <h2>All Clients</h2>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Testimonial</th>
+                            <th>Designation</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if clients %}
+                            {% for client in clients %}
+                            <tr>
+                                <td>{{ client.id }}</td>
+                                <td><img src="{{ url_for('static', filename=client.image) }}" alt="{{ client.name }}" class="table-image"></td>
+                                <td>{{ client.name }}</td>
+                                <td>{{ client.description[:100] }}...</td>
+                                <td>{{ client.designation }}</td>
+                                <td>{{ client.created_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="no-data">No clients added yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

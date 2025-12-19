@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Our Projects & Clients</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">Portfolio</div>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#clients">Clients</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Welcome to Our Portfolio</h1>
+            <p>Showcasing our best projects and happy clients</p>
+        </div>
+    </section>
+
+    <!-- Our Projects Section -->
+    <section class="projects-section" id="projects">
+        <div class="container">
+            <h2 class="section-title">Our Projects</h2>
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Happy Clients Section -->
+    <section class="clients-section" id="clients">
+        <div class="container">
+            <h2 class="section-title">Happy Clients</h2>
+            <div class="clients-grid" id="clientsGrid">
+                <!-- Clients will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" name="mobile" placeholder="Mobile Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="city" placeholder="City" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <div id="contactMessage" class="message"></div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <h2 class="section-title">Subscribe to Our Newsletter</h2>
+            <p>Stay updated with our latest projects and news</p>
+            <form class="newsletter-form" id="newsletterForm">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit" class="btn btn-secondary">Subscribe</button>
+            </form>
+            <div id="newsletterMessage" class="message"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Portfolio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load Projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                const projects = await response.json();
+                const projectsGrid = document.getElementById('projectsGrid');
+                
+                if (projects.length === 0) {
+                    projectsGrid.innerHTML = '<p class="no-data">No projects available yet.</p>';
+                    return;
+                }
+                
+                projectsGrid.innerHTML = projects.map(project => `
+                    <div class="project-card">
+                        <img src="${project.image}" alt="${project.name}">
+                        <div class="project-content">
+                            <h3>${project.name}</h3>
+                            <p>${project.description}</p>
+                            <button class="btn btn-outline">Read More</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
+
+        // Load Clients
+        async function loadClients() {
+            try {
+                const response = await fetch('/api/clients');
+                const clients = await response.json();
+                const clientsGrid = document.getElementById('clientsGrid');
+                
+                if (clients.length === 0) {
+                    clientsGrid.innerHTML = '<p class="no-data">No clients available yet.</p>';
+                    return;
+                }
+                
+                clientsGrid.innerHTML = clients.map(client => `
+                    <div class="client-card">
+                        <img src="${client.image}" alt="${client.name}">
+                        <p class="client-description">"${client.description}"</p>
+                        <h4>${client.name}</h4>
+                        <p class="client-designation">${client.designation}</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading clients:', error);
+            }
+        }
+
+        // Handle Contact Form
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const messageDiv = document.getElementById('contactMessage');
+                messageDiv.textContent = data.message;
+                messageDiv.className = data.success ? 'message success' : 'message error';
+                
+                if (data.success) {
+                    e.target.reset();
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+            }
+        });
+
+        // Handle Newsletter Form
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch('/api/newsletter', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                const messageDiv = document.getElementById('newsletterMessage');
+                messageDiv.textContent = data.message;
+                messageDiv.className = data.success ? 'message success' : 'message error';
+                
+                if (data.success) {
+                    e.target.reset();
+                }
+            } catch (error) {
+                console.error('Error subscribing:', error);
+            }
+        });
+
+        // Load data on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProjects();
+            loadClients();
+        });
+    </script>
+</body>
+</html>

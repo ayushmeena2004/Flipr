@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <h2>Admin Panel</h2>
+            <nav class="admin-nav">
+                <a href="{{ url_for('admin') }}" class="active">Dashboard</a>
+                <a href="{{ url_for('admin_projects') }}">Manage Projects</a>
+                <a href="{{ url_for('admin_clients') }}">Manage Clients</a>
+                <a href="{{ url_for('admin_contacts') }}">Contact Forms</a>
+                <a href="{{ url_for('admin_subscribers') }}">Newsletter Subscribers</a>
+                <a href="{{ url_for('index') }}" class="back-link">← Back to Website</a>
+            </nav>
+        </aside>
+        
+        <main class="admin-main">
+            <h1>Dashboard</h1>
+            <div class="dashboard-cards">
+                <div class="dashboard-card">
+                    <h3>Projects</h3>
+                    <p>Manage your portfolio projects</p>
+                    <a href="{{ url_for('admin_projects') }}" class="btn btn-primary">View Projects</a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Clients</h3>
+                    <p>Manage client testimonials</p>
+                    <a href="{{ url_for('admin_clients') }}" class="btn btn-primary">View Clients</a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Contact Forms</h3>
+                    <p>View contact form submissions</p>
+                    <a href="{{ url_for('admin_contacts') }}" class="btn btn-primary">View Contacts</a>
+                </div>
+                <div class="dashboard-card">
+                    <h3>Subscribers</h3>
+                    <p>View newsletter subscribers</p>
+                    <a href="{{ url_for('admin_subscribers') }}" class="btn btn-primary">View Subscribers</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
